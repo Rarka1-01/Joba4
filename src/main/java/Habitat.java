@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 public class Habitat
 {
+    public static boolean draw_cat = true;
+    public static boolean draw_dog = true;
+
     Habitat(int width, int height, int time_dog, int time_cat, int chance_dog, int chance_cat)
     {
         this.wd = width;
@@ -30,6 +33,7 @@ public class Habitat
         this.setting_CheckBox();
 
         this.gr_time_daly = new ToggleGroup();
+        this.priority = new ToggleGroup();
 
         this.setting_RadioButton();
 
@@ -45,24 +49,26 @@ public class Habitat
         int prev_cat = this.count_cat;
         int prev_dog = this.count_dog;
 
+        this.dt = d_t;
+
         Singleton.checkLiveObject(this.root, this);
 
 
-        if (d_t % this.time_dog == 0 && Math.random() * 100 <= this.chance_dog)
+        if (d_t % this.time_dog == 0 && Math.random() * 100 <= this.chance_dog && this.dsp)
         {
             Singleton.addAnimal(new Dog(this.count_dog + this.count_cat + d_t), d_t);
             Dog.count++;
             this.count_dog++;
         }
 
-        if (d_t % this.time_cat == 0 && Math.random() * 100 <= this.chance_cat)
+        if (d_t % this.time_cat == 0 && Math.random() * 100 <= this.chance_cat && this.csp)
         {
             Singleton.addAnimal(new Cat(this.count_cat + this.count_dog + d_t), d_t);
             Cat.count++;
             this.count_cat++;
         }
 
-        if(this.count_cat - prev_cat != 0)
+        if(this.count_cat - prev_cat != 0 && this.csp)
         {
             ImageView nIamge_cat = new ImageView(Cat.icon);
             nIamge_cat.setLayoutX(Math.random() * 432 + 20);
@@ -70,11 +76,16 @@ public class Habitat
 
             Singleton.getAnimalsImage().add(nIamge_cat);
             this.cats.add(nIamge_cat);
-            root.getChildren().add(nIamge_cat);
-            scene.setRoot(root);
+
+            if(draw_cat)
+            {
+                root.getChildren().add(nIamge_cat);
+                scene.setRoot(root);
+            }
+
         }
 
-        if(this.count_dog - prev_dog != 0)
+        if(this.count_dog - prev_dog != 0 && this.dsp)
         {
             ImageView nIamge_dog = new ImageView(Dog.icon);
             nIamge_dog.setLayoutX(Math.random() * 432 + 20);
@@ -82,8 +93,12 @@ public class Habitat
 
             Singleton.getAnimalsImage().add(nIamge_dog);
             this.dogs.add(nIamge_dog);
-            root.getChildren().add(nIamge_dog);
-            scene.setRoot(root);
+
+            if(draw_dog)
+            {
+                root.getChildren().add(nIamge_dog);
+                scene.setRoot(root);
+            }
         }
     }
 
@@ -213,6 +228,11 @@ public class Habitat
         this.show_Info.setLayoutY(610);
         this.show_Info.setPrefSize(130, 10);
         this.show_Info.setDisable(true);
+
+        this.i_want_be_a_cat = new Button("I\n\nc\na\nt");
+        this.i_want_be_a_cat.setLayoutX(465);
+        this.i_want_be_a_cat.setLayoutY(33);
+        this.i_want_be_a_cat.setPrefSize(30, 100);
     }
 
     private void setting_CheckBox()
@@ -235,6 +255,16 @@ public class Habitat
         this.off_time_daly.setLayoutY(590);
         this.off_time_daly.fire();
         this.off_time_daly.setToggleGroup(this.gr_time_daly);
+
+        this.priority_cat = new RadioButton("High\npriority");
+        this.priority_cat.setLayoutX(210);
+        this.priority_cat.setLayoutY(67);
+        this.priority_cat.setToggleGroup(this.priority);
+
+        this.priority_dog = new RadioButton("High\npriority");
+        this.priority_dog.setLayoutX(210);
+        this.priority_dog.setLayoutY(28);
+        this.priority_dog.setToggleGroup(this.priority);
     }
 
     private void setting_ComboBox()
@@ -281,12 +311,16 @@ public class Habitat
     public int chance_cat;
     public int count_dog;
     public int count_cat;
+    public int dt;
+    public boolean dsp = true;
+    public boolean csp = true;
     public ArrayList<ImageView> cats = new ArrayList<>();
     public ArrayList<ImageView> dogs = new ArrayList<>();
 
     public Scene scene;
     public Group root;
     public ToggleGroup gr_time_daly;
+    public ToggleGroup priority;
     public ToggleGroup menu_gr_time_daly;
     public ToggleGroup menu_gr_cat;
     public ToggleGroup menu_gr_dog;
@@ -298,7 +332,6 @@ public class Habitat
     public Menu show_mW;
     public Menu go_cat;
     public Menu go_dog;
-
 
     public MenuItem start_sim_on_menu;
     public MenuItem stop_sim_on_menu;
@@ -312,6 +345,8 @@ public class Habitat
 
     public RadioButton on_time_daly;
     public RadioButton off_time_daly;
+    public RadioButton priority_cat;
+    public RadioButton priority_dog;
 
     public Label daly_time_sim;
     public Label t_s_cat;
@@ -324,7 +359,7 @@ public class Habitat
     public Button start_timer;
     public Button stop_timer;
     public Button show_Info;
-
+    public Button i_want_be_a_cat;
 
     public CheckBox check_modal;
 

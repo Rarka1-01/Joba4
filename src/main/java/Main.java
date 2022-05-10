@@ -20,9 +20,10 @@ public class Main extends Application
     ModalWindow mW = new ModalWindow(250,250);
     ModalWindow_2 mW_2 = new ModalWindow_2(250,250);
     Timer mTimer = new Timer();
-    MoveCat mC = new MoveCat(h.cats);
-    MoveDog mD = new MoveDog(h.dogs);
+    MoveCat mC = new MoveCat(h.cats, 8);
+    MoveDog mD = new MoveDog(h.dogs, 10);
     int daly_time = 0;
+    ClientPart cl = new ClientPart(h);
     boolean off_sim = true;
 
     public void start_move()
@@ -255,6 +256,20 @@ public class Main extends Application
 
         h.stop_dog.setOnAction(actionEvent -> mD.pauseThread());
 
+        h.priority_cat.setOnAction(actionEvent -> {mC.setPriority(8); mD.setPriority(2);});
+
+        h.priority_dog.setOnAction(actionEvent -> {mC.setPriority(2); mD.setPriority(8);});
+
+        h.i_want_be_a_cat.setOnAction(actionEvent -> {
+           try
+           {
+              cl.reQuest();
+           }
+           catch (Exception e)
+           {
+               System.out.println(e.getMessage());
+           }
+        });
 
         mW.ok.setOnAction(actionEvent ->
         {
@@ -302,7 +317,8 @@ public class Main extends Application
                 h.chance_cat_combo, h.chance_dog_combo,
                 h.textF_time_cat, h.textF_time_dog, h.time_l_cat,
                 h.time_l_dog, h.textF_timeL_dog, h.textF_timeL_cat,
-                h.show_Info);
+                h.show_Info, h.priority_cat, h.priority_dog,
+                h.i_want_be_a_cat);
 
         setting_button(primaryStage);
         start_move();
